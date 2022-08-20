@@ -1,32 +1,23 @@
 import asyncio
-from functools import wraps
-from typing import Callable, Awaitable, Coroutine
-
-
-def ratelimit(count: int, period: int):
-    rate_limiter = RateLimiter(count, period)
-
-    def decorator(fn: Callable[..., Awaitable]):
-        @wraps(fn)
-        async def wrapper(*args, **kwargs):
-            return await rate_limiter.run(fn(*args, **kwargs))
-
-        return wrapper
-
-    return decorator
+from typing import Coroutine
 
 
 class RateLimiter:
     def __init__(self, count: int, delay: int):
-        self.workers = [asyncio.create_task(self.worker()) for _ in range(count)]
+        self.worker_count = count
         self.delay = delay
 
         self.call_queue = asyncio.Queue()
+        self.initialized = False
+        self.workers = []
 
     async def __aenter__(self):
-        pass
+        self.workers = [
+            asyncio.create_task(self.worker()) for _ in range(self.worker_count)
+        ]
+        return self
 
-    async def __aexit__(self):
+    async def __aexit__(self, exc_type, exc, tb):
         for worker in self.workers:
             worker.cancel()
 
