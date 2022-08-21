@@ -1,8 +1,9 @@
 [tool.poetry]
 name = "aioratelimits"
-version = "0.1.0"
+version = "0.2.0"
 description = ""
 authors = ["Dmitry Kostromin <kupec-k@ya.ru>"]
+keywords = ["rates", "ratelimit", "ratelimiter", "leaky", "bucket"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
