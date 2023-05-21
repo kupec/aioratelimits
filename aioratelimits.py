@@ -43,7 +43,7 @@ class RateLimiter:
 
             await asyncio.sleep(self.delay)
 
-    def run(self, coro: Coroutine) -> asyncio.Future:
+    def run(self, coro: Coroutine[Any, Any, T]) -> asyncio.Future[T]:
         future = asyncio.get_running_loop().create_future()
         self.call_queue.put_nowait((coro, future))
         return future
