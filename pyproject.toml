@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aioratelimits"
-version = "0.2.1"
+version = "0.2.2"
 description = ""
 authors = ["Dmitry Kostromin <kupec-k@ya.ru>"]
 keywords = ["rates", "ratelimit", "ratelimiter", "leaky", "bucket"]

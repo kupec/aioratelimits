@@ -20,27 +20,24 @@ class RateLimiter:
     async def __aexit__(self, exc_type, exc, tb):
         for worker in self.workers:
             worker.cancel()
+        while not self.call_queue.empty():
+            coro, future = await self.call_queue.get()
+            future.cancel()
+            coro.close()
 
     async def worker(self):
         while True:
-            coro, result_queue = await self.call_queue.get()
+            coro, future = await self.call_queue.get()
 
-            result = None
-            error = None
             try:
                 result = await coro
+                future.set_result(result)
             except Exception as exc:
-                error = exc
-            await result_queue.put((result, error))
+                future.set_exception(exc)
 
             await asyncio.sleep(self.delay)
 
-    async def run(self, coro: Coroutine):
-        result_queue = asyncio.Queue()
-        await self.call_queue.put((coro, result_queue))
-        result, error = await result_queue.get()
-
-        if error:
-            raise error
-
-        return result
+    def run(self, coro: Coroutine) -> asyncio.Future:
+        future = asyncio.get_running_loop().create_future()
+        self.call_queue.put_nowait((coro, future))
+        return future
