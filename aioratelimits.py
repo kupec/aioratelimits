@@ -1,12 +1,10 @@
 import asyncio
 
-from typing import Coroutine, List, Tuple, TypeVar, Any
-
-T = TypeVar('T')
+from typing import Coroutine, List
 
 
 class RateLimiter:
-    call_queue: asyncio.Queue[Tuple[Coroutine[Any, Any, T], asyncio.Future[T]]]
+    call_queue: asyncio.Queue
     workers: List[asyncio.Task]
 
     def __init__(self, count: int, delay: int):
@@ -43,7 +41,7 @@ class RateLimiter:
 
             await asyncio.sleep(self.delay)
 
-    def run(self, coro: Coroutine[Any, Any, T]) -> asyncio.Future[T]:
+    def run(self, coro: Coroutine) -> asyncio.Future:
         future = asyncio.get_running_loop().create_future()
         self.call_queue.put_nowait((coro, future))
         return future

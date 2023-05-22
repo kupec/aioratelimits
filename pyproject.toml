@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aioratelimits"
-version = "0.2.4"
+version = "0.2.5"
 description = ""
 authors = ["Dmitry Kostromin <kupec-k@ya.ru>"]
 keywords = ["rates", "ratelimit", "ratelimiter", "leaky", "bucket"]
@@ -8,7 +8,7 @@ readme = "README.md"
 repository = "https://github.com/kupec/aioratelimits"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.7"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.2"
