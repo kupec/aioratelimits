@@ -36,6 +36,8 @@ class RateLimiter:
             try:
                 result = await coro
                 future.set_result(result)
+            except asyncio.CancelledError:
+                raise
             except Exception as exc:
                 future.set_exception(exc)
 
